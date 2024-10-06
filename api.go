@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -21,8 +20,12 @@ type ApiError struct {
 	Error string
 }
 
-func makeHTTPHandleFunc(f apiFunc) http.HandlerFunc {
+func makeHTTPHandleFunc(method string, f apiFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != method {
+			WriteJSON(w, http.StatusBadRequest, ApiError{Error: "invalid request method, valid request method is: " + method})
+			return
+		}
 		if err := f(w, r); err != nil {
 			WriteJSON(w, http.StatusBadRequest, ApiError{Error: err.Error()})
 		}
@@ -41,23 +44,11 @@ func NewAPIServer(listenAddr string) *APIServer {
 
 func (s *APIServer) Run() {
 	router := mux.NewRouter()
-	router.HandleFunc("/account", makeHTTPHandleFunc(s.handleAccount))
+	router.HandleFunc("/account", makeHTTPHandleFunc(http.MethodPost, s.handleCreateAccount))
+	router.HandleFunc("/account/{id}", makeHTTPHandleFunc(http.MethodGet, s.handleGetAccount))
 
 	log.Println("JSON API running on port: ", s.listenAddr)
 	http.ListenAndServe(s.listenAddr, router)
-}
-
-func (s *APIServer) handleAccount(w http.ResponseWriter, r *http.Request) error {
-	if r.Method == http.MethodGet {
-		return s.handleGetAccount(w, r)
-	}
-	if r.Method == http.MethodPost {
-		return s.handleCreateAccount(w, r)
-	}
-	if r.Method == http.MethodDelete {
-		return s.handleDeleteAccount(w, r)
-	}
-	return fmt.Errorf("invalid request method")
 }
 
 func (s *APIServer) handleGetAccount(w http.ResponseWriter, r *http.Request) error {

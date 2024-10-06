@@ -3,7 +3,7 @@ package main
 import "math/rand"
 
 type Account struct {
-	ID        int    `json:"ID"`
+	ID        int    `json:"id"`
 	FirstName string `json:"firstName"`
 	LasttName string `json:"lastName"`
 	Number    int64  `json:"number"`
