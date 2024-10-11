@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -12,6 +14,13 @@ func WriteJSON(w http.ResponseWriter, status int, v any) error {
 	w.WriteHeader(status)
 	w.Header().Add("Content-Type", "application/json")
 	return json.NewEncoder(w).Encode(v)
+}
+
+func ParseJSON(r *http.Request, payload any) error {
+	if r.Body == nil {
+		return fmt.Errorf("request body is empty")
+	}
+	return json.NewDecoder(r.Body).Decode(payload)
 }
 
 type apiFunc func(w http.ResponseWriter, r *http.Request) error
@@ -54,11 +63,24 @@ func (s *APIServer) Run() {
 }
 
 func (s *APIServer) handleGetAccount(w http.ResponseWriter, r *http.Request) error {
-	return WriteJSON(w, http.StatusAccepted, NewAccount("Hossein", "Shafee"))
+	return nil
 }
 
 func (s *APIServer) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
-	return nil
+
+	//get the payload from request
+	var payload RegisterAccountPayLoad
+	if err := ParseJSON(r, &payload); err != nil {
+		return err
+	}
+
+	account, err := s.storage.CreateAccount(payload.FirstName, payload.LastName, uint64(rand.Intn(100000000)))
+
+	if err != nil {
+		return err
+	}
+
+	return WriteJSON(w, http.StatusAccepted, account)
 }
 
 func (s *APIServer) handleDeleteAccount(w http.ResponseWriter, r *http.Request) error {
