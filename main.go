@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+
+	"github.com/zhitoo/gobank/config"
 )
 
 func main() {
@@ -9,6 +11,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	server := NewAPIServer(":8080", storage)
+	server := NewAPIServer("localhost:"+config.Envs.Port, storage)
 	server.Run()
 }

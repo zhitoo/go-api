@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/zhitoo/gobank/requests"
 )
 
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
@@ -69,7 +70,7 @@ func (s *APIServer) handleGetAccount(w http.ResponseWriter, r *http.Request) err
 func (s *APIServer) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
 
 	//get the payload from request
-	var payload RegisterAccountPayLoad
+	var payload requests.RegisterAccount
 	if err := ParseJSON(r, &payload); err != nil {
 		return err
 	}

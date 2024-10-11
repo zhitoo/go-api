@@ -2,7 +2,9 @@ package main
 
 import (
 	_ "github.com/lib/pq"
+	"github.com/zhitoo/gobank/config"
 	"github.com/zhitoo/gobank/models"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -12,12 +14,20 @@ type Storage interface {
 	CreateAccount(FirstName string, LastName string, Number uint64) (*models.Account, error)
 }
 
+func HashPassword(password string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hash), nil
+}
+
 type PostgresStorage struct {
 	db *gorm.DB
 }
 
 func NewPostgresStore() (*PostgresStorage, error) {
-	dsn := "host=localhost user=default password=password dbname=gobank port=5433 sslmode=disable"
+	dsn := "host=" + config.Envs.DBHost + " user=" + config.Envs.DBUser + " password=" + config.Envs.DBPassword + " dbname=" + config.Envs.DBName + " port=" + config.Envs.DBPort + " sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	// Migrate the account schema

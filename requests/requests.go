@@ -1,6 +1,6 @@
-package main
+package requests
 
-type RegisterAccountPayLoad struct {
+type RegisterAccount struct {
 	FirstName string `json:"firstName" validate:"required"`
 	LastName  string `json:"lastName" validate:"required"`
 }
