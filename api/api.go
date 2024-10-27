@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/zhitoo/gobank/requests"
 	"github.com/zhitoo/gobank/storage"
 )
 
@@ -11,11 +12,13 @@ type ApiError struct {
 type APIServer struct {
 	listenAddr string
 	storage    storage.Storage
+	validator  *requests.Validator
 }
 
-func NewAPIServer(listenAddr string, storage storage.Storage) *APIServer {
+func NewAPIServer(listenAddr string, storage storage.Storage, validator *requests.Validator) *APIServer {
 	return &APIServer{
 		listenAddr: listenAddr,
 		storage:    storage,
+		validator:  validator,
 	}
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/zhitoo/gobank/api"
 	"github.com/zhitoo/gobank/config"
+	"github.com/zhitoo/gobank/requests"
 	"github.com/zhitoo/gobank/storage"
 )
 
@@ -13,6 +14,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	server := api.NewAPIServer("localhost:"+config.Envs.Port, storage)
+	server := api.NewAPIServer("localhost:"+config.Envs.Port, storage, requests.NewValidator())
 	server.Run()
 }

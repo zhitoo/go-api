@@ -1,6 +1,7 @@
 package requests
 
 type RegisterAccount struct {
-	FirstName string `json:"firstName" validate:"required"`
-	LastName  string `json:"lastName" validate:"required"`
+	FirstName string `json:"FirstName" validate:"required,min=2"`
+	LastName  string `json:"LastName" validate:"required,min=2"`
+	Age       uint   `json:"Age" validate:"required,teener"`
 }

@@ -13,9 +13,18 @@ func (s *APIServer) handleGetAccount(c *fiber.Ctx) error {
 
 func (s *APIServer) handleCreateAccount(c *fiber.Ctx) error {
 	payload := new(requests.RegisterAccount)
+
 	if err := c.BodyParser(payload); err != nil {
 		return err
 	}
+
+	// Validation
+	errs := s.validator.Validate(payload)
+	if errs != nil {
+		c.Status(422)
+		return c.JSON(errs)
+	}
+
 	account, err := s.storage.CreateAccount(payload.FirstName, payload.LastName, uint64(rand.Intn(100000000)))
 	if err != nil {
 		return err
