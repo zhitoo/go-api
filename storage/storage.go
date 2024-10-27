@@ -10,8 +10,9 @@ import (
 )
 
 type Storage interface {
-	GetAccountByID(int) (*models.Account, error)
-	CreateAccount(FirstName string, LastName string, Number uint64) (*models.Account, error)
+	GetUserByID(int) (*models.User, error)
+	CreateUser(user *models.User) (*models.User, error)
+	GetUserByUserName(userName string) (*models.User, error)
 }
 
 func HashPassword(password string) (string, error) {
@@ -30,8 +31,8 @@ func NewPostgresStore() (*PostgresStorage, error) {
 	dsn := "host=" + config.Envs.DBHost + " user=" + config.Envs.DBUser + " password=" + config.Envs.DBPassword + " dbname=" + config.Envs.DBName + " port=" + config.Envs.DBPort + " sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
-	// Migrate the account schema
-	db.AutoMigrate(&models.Account{})
+	// Migrate the user schema
+	db.AutoMigrate(&models.User{})
 
 	if err != nil {
 		return nil, err
@@ -40,17 +41,17 @@ func NewPostgresStore() (*PostgresStorage, error) {
 	return &PostgresStorage{db: db}, nil
 }
 
-func (p *PostgresStorage) GetAccountByID(ID int) (*models.Account, error) {
-	return &models.Account{}, nil
+func (p *PostgresStorage) GetUserByID(ID int) (*models.User, error) {
+	return &models.User{}, nil
 }
 
-func (p *PostgresStorage) CreateAccount(FirstName string, LastName string, Number uint64) (*models.Account, error) {
-	account := models.Account{
-		FirstName: FirstName,
-		LastName:  LastName,
-		Number:    int64(Number),
-		Balance:   0,
-	}
-	result := p.db.Create(&account) // pass pointer of data to Create
-	return &account, result.Error
+func (p *PostgresStorage) GetUserByUserName(userName string) (*models.User, error) {
+	user := &models.User{}
+	result := p.db.Take(user, "user_name = ?", userName)
+	return user, result.Error
+}
+
+func (p *PostgresStorage) CreateUser(user *models.User) (*models.User, error) {
+	result := p.db.Create(user)
+	return user, result.Error
 }

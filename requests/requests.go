@@ -1,7 +1,10 @@
 package requests
 
-type RegisterAccount struct {
-	FirstName string `json:"FirstName" validate:"required,min=2"`
-	LastName  string `json:"LastName" validate:"required,min=2"`
-	Age       uint   `json:"Age" validate:"required,teener"`
+type RegisterUser struct {
+	FirstName *string `json:"FirstName" validate:"omitempty,min=2"`
+	LastName  *string `json:"LastName" validate:"omitempty,min=2"`
+	UserName  string  `json:"UserName" validate:"min=1,max=32"`
+	Password  string  `json:"Password" validate:"min=4,max=32"`
+	Email     *string `json:"Email" validate:"omitempty,email"`
+	Mobile    *string `json:"Mobile" validate:"omitempty,mobile"`
 }
