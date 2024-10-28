@@ -4,12 +4,15 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/zhitoo/gobank/config"
 	"github.com/zhitoo/gobank/requests"
 	"github.com/zhitoo/gobank/storage"
+
+	jwtware "github.com/gofiber/contrib/jwt"
 )
 
 type ApiError struct {
-	Error string
+	Message string
 }
 
 type APIServer struct {
@@ -28,9 +31,22 @@ func NewAPIServer(listenAddr string, storage storage.Storage, validator *request
 
 func (s *APIServer) Run() {
 	app := fiber.New()
+	app.Use(func(c *fiber.Ctx) error {
+		c.Set("Accept", "application/json")
+		// Go to next middleware:
+		return c.Next()
+	})
+
 	app.Get("/", s.handleHome)
-	app.Post("/account", s.handleCreateAccount)
-	app.Get("/account/{id}", s.handleGetAccount)
+	app.Post("/user", s.handleCreateUser)
+	app.Post("/login", s.handleLogin)
+
+	// JWT Middleware
+	app.Use(jwtware.New(jwtware.Config{
+		SigningKey: jwtware.SigningKey{Key: []byte(config.Envs.JWTSecretKey)},
+	}))
+
+	app.Get("/auth/user", s.handleGetUser)
 
 	log.Println("JSON API running on port: ", s.listenAddr)
 	app.Listen(s.listenAddr)

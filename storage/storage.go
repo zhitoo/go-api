@@ -10,7 +10,7 @@ import (
 )
 
 type Storage interface {
-	GetUserByID(int) (*models.User, error)
+	GetUserByID(string) (*models.User, error)
 	CreateUser(user *models.User) (*models.User, error)
 	GetUserByUserName(userName string) (*models.User, error)
 }
@@ -41,8 +41,10 @@ func NewPostgresStore() (*PostgresStorage, error) {
 	return &PostgresStorage{db: db}, nil
 }
 
-func (p *PostgresStorage) GetUserByID(ID int) (*models.User, error) {
-	return &models.User{}, nil
+func (p *PostgresStorage) GetUserByID(ID string) (*models.User, error) {
+	user := &models.User{}
+	result := p.db.Find(user, ID)
+	return user, result.Error
 }
 
 func (p *PostgresStorage) GetUserByUserName(userName string) (*models.User, error) {

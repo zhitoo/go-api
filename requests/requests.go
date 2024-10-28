@@ -8,3 +8,8 @@ type RegisterUser struct {
 	Email     *string `json:"Email" validate:"omitempty,email"`
 	Mobile    *string `json:"Mobile" validate:"omitempty,mobile"`
 }
+
+type Login struct {
+	UserName string `json:"UserName" validate:"required"`
+	Password string `json:"Password" validate:"required"`
+}
