@@ -1,6 +1,9 @@
 package api
 
 import (
+	"log"
+
+	"github.com/gofiber/fiber/v2"
 	"github.com/zhitoo/gobank/requests"
 	"github.com/zhitoo/gobank/storage"
 )
@@ -21,4 +24,14 @@ func NewAPIServer(listenAddr string, storage storage.Storage, validator *request
 		storage:    storage,
 		validator:  validator,
 	}
+}
+
+func (s *APIServer) Run() {
+	app := fiber.New()
+	app.Get("/", s.handleHome)
+	app.Post("/account", s.handleCreateAccount)
+	app.Get("/account/{id}", s.handleGetAccount)
+
+	log.Println("JSON API running on port: ", s.listenAddr)
+	app.Listen(s.listenAddr)
 }
