@@ -4,9 +4,9 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/zhitoo/gobank/config"
-	"github.com/zhitoo/gobank/requests"
-	"github.com/zhitoo/gobank/storage"
+	"github.com/zhitoo/go-api/config"
+	"github.com/zhitoo/go-api/requests"
+	"github.com/zhitoo/go-api/storage"
 
 	jwtware "github.com/gofiber/contrib/jwt"
 )

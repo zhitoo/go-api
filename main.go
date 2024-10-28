@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 
-	"github.com/zhitoo/gobank/api"
-	"github.com/zhitoo/gobank/config"
-	"github.com/zhitoo/gobank/requests"
-	"github.com/zhitoo/gobank/storage"
+	"github.com/zhitoo/go-api/api"
+	"github.com/zhitoo/go-api/config"
+	"github.com/zhitoo/go-api/requests"
+	"github.com/zhitoo/go-api/storage"
 )
 
 func main() {

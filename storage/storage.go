@@ -2,8 +2,8 @@ package storage
 
 import (
 	_ "github.com/lib/pq"
-	"github.com/zhitoo/gobank/config"
-	"github.com/zhitoo/gobank/models"
+	"github.com/zhitoo/go-api/config"
+	"github.com/zhitoo/go-api/models"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

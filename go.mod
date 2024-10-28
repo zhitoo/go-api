@@ -1,4 +1,4 @@
-module github.com/zhitoo/gobank
+module github.com/zhitoo/go-api
 
 go 1.21.2
 
